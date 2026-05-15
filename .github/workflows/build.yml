@@ -50,7 +50,8 @@ jobs:
           ./gradlew :ios:createIPA \
             -Probovm.archs=arm64 \
             -Probovm.iOSSkipSigning=true \
-            -Probovm.skipSigning=true
+            -Probovm.skipSigning=true \
+            -PskipHtml=true
         # -Probovm.iOSSkipSigning=true produces an unsigned IPA which is actually
         # BETTER for TrollStore — TrollStore signs it itself on-device.
         # If you're using Sideloadly/AltStore, remove that flag and let the
