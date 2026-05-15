@@ -1,6 +1,6 @@
 [submodule "core"]
 	path = core
-	url = https://github.com/fluddokt/opsu
+	url = https://github.com/Actionizer/opsu
 [submodule "jlayer/src"]
 	path = jlayer/src
 	url = https://github.com/fluddokt/JLayerOpsu.git
