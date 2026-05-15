@@ -45,6 +45,11 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
+      - name: Disable GWT plugin (not needed for iOS)
+        run: |
+          # Comment out the gwt-gradle-plugin line in build.gradle
+          sed -i '' 's/^[[:space:]]*classpath "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6"/\/\/ &/' build.gradle
+      
       - name: Build iOS IPA
         run: |
           ./gradlew :ios:createIPA \
