@@ -49,6 +49,16 @@ jobs:
         run: |
           # Comment out the gwt-gradle-plugin line in build.gradle
           sed -i '' 's/^[[:space:]]*classpath "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6"/\/\/ &/' build.gradle
+
+      - name: Exclude HTML subproject and GWT plugin
+        run: |
+          # Remove 'html' from settings.gradle include line
+          perl -pi -e "s/include.*?(['\"])html\1[,)]?//g" settings.gradle
+          # Remove any orphaned commas/parentheses
+          perl -pi -e "s/\([,)]?|[,)]+\)/()/g; s/,,/,/g; s/\(\s*,/(/g; s/,\s*\)/)/g" settings.gradle
+          
+    # Comment out apply plugin 'gwt'
+    perl -pi -e "s/^(\s*apply plugin: ['\"]gwt['\"])/\/\/ \$1/" build.gradle
       
       - name: Build iOS IPA
         run: |
