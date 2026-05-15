@@ -38,8 +38,8 @@ jobs:
         with:
           path: |
             ~/.gradle/caches
-            ~/.gradle/wrapper
-            ~/.robovm/cache # RoboVM caches AOT-compiled stuff here, HUGE timesave
+            ~/.robovm/cache
+          # removed: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-robovm-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-robovm-
