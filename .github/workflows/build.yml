@@ -57,8 +57,8 @@ jobs:
           # Remove any orphaned commas/parentheses
           perl -pi -e "s/\([,)]?|[,)]+\)/()/g; s/,,/,/g; s/\(\s*,/(/g; s/,\s*\)/)/g" settings.gradle
           
-    # Comment out apply plugin 'gwt'
-    perl -pi -e "s/^(\s*apply plugin: ['\"]gwt['\"])/\/\/ \$1/" build.gradle
+          # Comment out apply plugin 'gwt'
+          perl -pi -e "s/^(\s*apply plugin: ['\"]gwt['\"])/\/\/ \$1/" build.gradle
       
       - name: Build iOS IPA
         run: |
