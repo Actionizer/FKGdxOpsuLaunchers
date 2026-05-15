@@ -44,43 +44,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-robovm-
 
-      - name: Create self-signed certificate for signing
-        # RoboVM needs *something* in the keychain to sign with.
-        # This produces an ad-hoc style cert — fine for TrollStore/sideloading,
-        # NOT for App Store. The IPA will need to be re-signed locally anyway
-        # if you're using Sideloadly/AltStore; TrollStore bypasses this entirely.
-        run: |
-          security create-keychain -p "" build.keychain
-          security default-keychain -s build.keychain
-          security unlock-keychain -p "" build.keychain
-          security set-keychain-settings -lut 21600 build.keychain
-
-          # Generate a self-signed cert
-          openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-            -keyout /tmp/opsu-ios.key \
-            -out /tmp/opsu-ios.crt \
-            -subj "/CN=opsu-ios/O=opsu/C=US"
-
-          # Convert to p12 and import into keychain
-          openssl pkcs12 -export \
-            -in /tmp/opsu-ios.crt \
-            -inkey /tmp/opsu-ios.key \
-            -out /tmp/opsu-ios.p12 \
-            -passout pass:"" \
-            -legacy \
-            -keypbe PBE-SHA1-3DES \
-            -certpbe PBE-SHA1-3DES \
-            -nomac
-
-          security import /tmp/opsu-ios.p12 \
-            -k build.keychain \
-            -P "" \
-            -T /usr/bin/codesign
-
-          security set-key-partition-list \
-            -S apple-tool:,apple: \
-            -s -k "" build.keychain
-
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
@@ -88,7 +51,8 @@ jobs:
         run: |
           ./gradlew :ios:createIPA \
             -Probovm.archs=arm64 \
-            -Probovm.iOSSkipSigning=true
+            -Probovm.iOSSkipSigning=true \
+            -Probovm.skipSigning=true
         # -Probovm.iOSSkipSigning=true produces an unsigned IPA which is actually
         # BETTER for TrollStore — TrollStore signs it itself on-device.
         # If you're using Sideloadly/AltStore, remove that flag and let the
