@@ -45,6 +45,23 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
+      - name: Pre-cache RoboVM distribution (bypass HTTP Maven Central)
+        run: |
+          # Target the exact file that fails
+          ROBOVM_CACHE="$HOME/.gradle/caches/modules-2/files-2.1/org.robovm/robovm-dist/1.0.0-beta-01"
+          mkdir -p "$ROBOVM_CACHE"
+          TARBALL="robovm-dist-1.0.0-beta-01-nocompiler.tar.gz"
+          URL="https://repo1.maven.org/maven2/org/robovm/robovm-dist/1.0.0-beta-01/$TARBALL"
+          echo "Downloading $TARBALL over HTTPS..."
+          curl -fL --retry 3 -o "$ROBOVM_CACHE/$TARBALL" "$URL" || { echo "Download failed"; exit 1; }
+          # Compute SHA1 and move into correct subdirectory
+          SHA1=$(shasum -a 1 "$ROBOVM_CACHE/$TARBALL" | awk '{print $1}')
+          mkdir -p "$ROBOVM_CACHE/$SHA1"
+          mv "$ROBOVM_CACHE/$TARBALL" "$ROBOVM_CACHE/$SHA1/"
+          echo "Cached $TARBALL with SHA1 $SHA1"
+          # Also verify it's a valid gzip/tar
+          tar tzf "$ROBOVM_CACHE/$SHA1/$TARBALL" > /dev/null && echo "Valid tarball" || { echo "Invalid tarball"; exit 1; }
+      
       - name: Disable GWT plugin (not needed for iOS)
         run: |
           # Comment out the gwt-gradle-plugin line in build.gradle
