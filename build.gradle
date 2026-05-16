@@ -35,7 +35,7 @@ allprojects {
 	}
 }
 
-project(":desktop") {
+/* project(":desktop") {
     apply plugin: "java"
 
 
@@ -72,7 +72,7 @@ project(":android") {
         compile 'org.tukaani:xz:1.6'
         
     }
-}
+} */
 
 project(":ios") {
     apply plugin: "java"
