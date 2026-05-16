@@ -59,7 +59,18 @@ jobs:
           
           # Comment out apply plugin 'gwt'
           perl -pi -e "s/^(\s*apply plugin: ['\"]gwt['\"])/\/\/ \$1/" build.gradle
-      
+
+      - name: Pre-cache RoboVM distribution (backup if init script fails)
+        run: |
+          ROBOVM_CACHE="$HOME/.gradle/caches/modules-2/files-2.1/org.robovm/robovm-dist/1.0.0-beta-01"
+          mkdir -p "$ROBOVM_CACHE"
+          TARBALL="robovm-dist-1.0.0-beta-01-nocompiler.tar.gz"
+          URL="https://repo1.maven.org/maven2/org/robovm/robovm-dist/1.0.0-beta-01/$TARBALL"
+          curl -fL -o "$ROBOVM_CACHE/$TARBALL" "$URL" || exit 1
+          SHA1=$(shasum -a 1 "$ROBOVM_CACHE/$TARBALL" | awk '{print $1}')
+          mkdir -p "$ROBOVM_CACHE/$SHA1"
+          mv "$ROBOVM_CACHE/$TARBALL" "$ROBOVM_CACHE/$SHA1/"
+            
       - name: Build iOS IPA
         run: |
           ./gradlew :ios:createIPA \
