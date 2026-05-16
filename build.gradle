@@ -80,6 +80,10 @@ project(":ios") {
 
     configurations { natives }
 
+	robovm {
+        iosSkipSigning = true
+    }
+
     dependencies {
         compile project(":core")
         compile "com.mobidevelop.robovm:robovm-rt:${roboVMVersion}"
