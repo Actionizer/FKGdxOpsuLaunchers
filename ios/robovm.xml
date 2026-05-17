@@ -8,7 +8,7 @@
   <iosEntitlementsPList>Entitlements.xml</iosEntitlementsPList>
   <resources>
     <resource>
-      <directory>../android/assets</directory>
+      <directory>../core/assets</directory>
       <includes>
         <include>**</include>
       </includes>
